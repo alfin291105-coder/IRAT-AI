@@ -1,21 +1,79 @@
-const db = require("../database/db");
 const aiEngine = require("../ai/engine");
 
-exports.reply = async (message) => {
+const memoryManager = require("../memory/memoryManager");
+const memoryRetriever = require("../memory/memoryRetriever");
+const memoryExtractor = require("../memory/memoryExtractor");
 
-    const reply = await aiEngine.chat(message);
+const conversationRepository = require("../repositories/conversationRepository");
 
-    db.run(
-        `
-        INSERT INTO messages(userId,message,reply)
-        VALUES(?,?,?)
-        `,
-        [
-            "guest",
-            message,
-            reply
-        ]
+
+exports.reply = async (
+    message,
+    sessionId = "default",
+    userId = "guest"
+) => {
+
+    // Simpan pesan user ke memory
+    memoryManager.addConversation(
+        sessionId,
+        "user",
+        message
     );
+
+    // Extract memory penting dari pesan user
+const extractedMemory = memoryExtractor.extractMemory(message);
+
+if (extractedMemory) {
+
+    await memoryManager.saveLongMemory(
+        userId,
+        extractedMemory.category,
+        extractedMemory.content,
+        extractedMemory.importance
+    );
+
+}
+
+
+    // Ambil memory yang relevan
+    const memories = await memoryRetriever.retrieveMemory(
+        userId,
+        message
+    );
+
+
+    // Simpan percakapan user
+    await conversationRepository.saveConversation(
+        sessionId,
+        "user",
+        message
+    );
+
+
+    // Kirim pesan + memory ke AI
+    const reply = await aiEngine.chat(
+        message,
+        {
+            memories
+        }
+    );
+
+
+    // Simpan balasan AI ke memory
+    memoryManager.addConversation(
+        sessionId,
+        "assistant",
+        reply
+    );
+
+
+    // Simpan balasan AI
+    await conversationRepository.saveConversation(
+        sessionId,
+        "assistant",
+        reply
+    );
+
 
     return reply;
 
