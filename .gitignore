@@ -1,0 +1,21 @@
+# Node.js
+node_modules/
+
+# Environment
+.env
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
+
+# SQLite database
+backend/data/*.db
+
+# npm
+package-lock.json
