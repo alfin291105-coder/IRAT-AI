@@ -11,3 +11,7 @@ app.use(express.json());
 app.use("/", routes);
 
 module.exports = app;
+
+const errorHandler = require("./middleware/errorHandler");
+
+app.use(errorHandler);
