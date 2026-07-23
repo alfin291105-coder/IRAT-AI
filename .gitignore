@@ -14,8 +14,7 @@ Thumbs.db
 # VS Code
 .vscode/
 
-# SQLite database
-backend/data/*.db
-
-# npm
-package-lock.json
+# Database
+*.db
+*.sqlite
+*.sqlite3
