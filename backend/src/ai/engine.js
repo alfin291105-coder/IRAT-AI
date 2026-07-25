@@ -1,32 +1,21 @@
+// =========================================
+// AI Engine IRAT AI v0.3.0
+// =========================================
+
 const provider = require("./providers/mock");
+const contextBuilder = require("./context/contextBuilder");
 
+exports.chat = async (
+    message,
+    context = {}
+) => {
 
-exports.chat = async (message, context = {}) => {
-
-    let prompt = message;
-
-
-    if (context.memories && context.memories.length > 0) {
-
-        const memoryText = context.memories
-            .map(memory => memory.content)
-            .join("\n");
-
-
-        prompt = `
-Memory pengguna:
-${memoryText}
-
-
-Pesan pengguna:
-${message}
-        `;
-    }
-
+    const prompt = contextBuilder.buildContext({
+        message,
+        memories: context.memories || []
+    });
 
     const reply = await provider.generate(prompt);
 
-
     return reply;
-
 };
