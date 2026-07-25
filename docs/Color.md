@@ -1,14 +1,46 @@
-Background
-#000000
+# IRAT AI Color Guide
 
-Bubble User
-#1EBEA5
+Standar warna antarmuka (UI) untuk Project IRAT AI.
 
-Bubble AI
-#273443
+---
 
-Border
-#D4AF37
+## Background
 
-Text
-#FFFFFF
+| Element    | Color     |
+| ---------- | --------- |
+| Background | `#000000` |
+
+---
+
+## Chat Bubble
+
+| Element     | Color     |
+| ----------- | --------- |
+| User Bubble | `#1EBEA5` |
+| AI Bubble   | `#273443` |
+
+---
+
+## Border
+
+| Element | Color     |
+| ------- | --------- |
+| Border  | `#D4AF37` |
+
+---
+
+## Text
+
+| Element      | Color     |
+| ------------ | --------- |
+| Primary Text | `#FFFFFF` |
+
+---
+
+## Design Principles
+
+* Minimalist
+* Private-first
+* Dark theme by default
+* High contrast for readability
+* Consistent across Android, Windows, and iPhone

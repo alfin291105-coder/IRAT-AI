@@ -1,70 +1,41 @@
 // =========================================
-// Memory Extractor IRAT AI v0.2.0
-// Mengekstrak fakta penting dari pesan user
+// Memory Extractor IRAT AI v0.4.0
+// Rule-Based Memory Extractor
 // =========================================
+
+const hobby = require("./rules/hobby");
+const identity = require("./rules/identity");
+const preference = require("./rules/preference");
+const work = require("./rules/work");
+
+const rules = [
+  hobby,
+  identity,
+  preference,
+  work
+];
 
 function extractMemory(message) {
 
-    const text = message.toLowerCase();
+  const text = message.toLowerCase();
 
-    // Nama
-    if (text.startsWith("nama saya")) {
+  for (const rule of rules) {
 
-        return {
-            category: "identity",
-            content: message,
-            importance: 10
-        };
+    const memory = rule.extract(
+      message,
+      text
+    );
 
+    if (memory) {
+      return memory;
     }
 
-    // Umur
-    if (text.includes("umur saya")) {
+  }
 
-        return {
-            category: "identity",
-            content: message,
-            importance: 9
-        };
+  return null;
 
-    }
-
-    // Suka
-    if (text.includes("saya suka")) {
-
-        return {
-            category: "preference",
-            content: message,
-            importance: 7
-        };
-
-    }
-
-    // Pekerjaan
-    if (text.includes("saya bekerja")) {
-
-        return {
-            category: "work",
-            content: message,
-            importance: 8
-        };
-
-    }
-
-    // Hobi
-    if (text.includes("hobi saya")) {
-
-        return {
-            category: "hobby",
-            content: message,
-            importance: 6
-        };
-
-    }
-
-    return null;
 }
 
 module.exports = {
-    extractMemory
+  extractMemory
 };
