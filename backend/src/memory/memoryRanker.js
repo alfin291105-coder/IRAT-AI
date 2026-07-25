@@ -4,66 +4,73 @@
 // =========================================
 
 function normalize(text = "") {
-    return text
-        .toLowerCase()
-        .replace(/[^\p{L}\p{N}\s]/gu, " ")
-        .replace(/\s+/g, " ")
-        .trim();
+  return text
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s]/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function calculateScore(memory, message, detectedIntent) {
+  let score = 0;
 
-    let score = 0;
+  const content = normalize(memory.content);
+  const messageText = normalize(message);
 
-    const content = normalize(memory.content);
-    const messageText = normalize(message);
+  // Intent / category cocok
+  if (detectedIntent && memory.category === detectedIntent) {
+    score += 100;
+  }
 
-    // Intent / category cocok
-    if (
-        detectedIntent &&
-        memory.category === detectedIntent
-    ) {
-        score += 100;
+  // Keyword matching
+  const words = messageText.split(" ").filter((word) => word.length >= 3);
+
+  for (const word of words) {
+    if (content.includes(word)) {
+      score += 10;
     }
+  }
 
-    // Keyword matching
-    const words = messageText
-        .split(" ")
-        .filter(word => word.length >= 3);
+  // Importance
+  score += (memory.importance || 0) * 5;
 
-    for (const word of words) {
+  // Recency
+  score += calculateRecency(memory);
 
-        if (content.includes(word)) {
-            score += 10;
-        }
-
-    }
-
-    // Importance
-    score += (memory.importance || 0) * 5;
-
-    return score;
+  return score;
 }
 
-function rankMemories(
-    memories,
-    message,
-    detectedIntent
-) {
+function calculateRecency(memory) {
+  const timestamp = memory.updatedAt || memory.createdAt;
 
-    return memories
-        .map(memory => ({
-            ...memory,
-            score: calculateScore(
-                memory,
-                message,
-                detectedIntent
-            )
-        }))
-        .sort((a, b) => b.score - a.score);
+if (!timestamp) {
+  return 0;
+}
 
+const age = Date.now() - new Date(timestamp).getTime();
+
+  const days = age / (1000 * 60 * 60 * 24);
+
+  if (days <= 7) {
+    return 20;
+  }
+
+  if (days <= 30) {
+    return 10;
+  }
+
+  return 0;
+}
+
+function rankMemories(memories, message, detectedIntent) {
+  return memories
+    .map((memory) => ({
+      ...memory,
+      score: calculateScore(memory, message, detectedIntent),
+    }))
+    .sort((a, b) => b.score - a.score);
 }
 
 module.exports = {
-    rankMemories
+  rankMemories,
 };

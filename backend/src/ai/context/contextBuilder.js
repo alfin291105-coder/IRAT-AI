@@ -3,19 +3,21 @@
 // Menyusun context untuk AI
 // =========================================
 
-function buildContext({
-    message,
-    memories = []
-}) {
+function buildContext({ message, memories = [] }) {
+  const memoryCount = memories.length;
 
-    const memorySection =
-        memories.length > 0
-            ? memories
-                .map(memory => `- ${memory.content}`)
-                .join("\n")
-            : "Tidak ada memory yang relevan.";
+  const memorySection =
+    memories.length > 0
+      ? memories
+          .map((memory, index) => `
+            [Memory ${index + 1}]
+            Category: ${memory.category}
+            Importance: ${memory.importance}
+            Content: ${memory.content}`)
+          .join("\n")
+      : "Tidak ada memory yang relevan.";
 
-    return `
+  return `
 SYSTEM
 
 Kamu adalah IRAT AI.
@@ -42,9 +44,8 @@ INSTRUCTION
 - Jika memory tidak cukup, katakan kamu belum mengetahui jawabannya.
 - Jangan membuat informasi yang tidak ada di memory.
 `;
-
 }
 
 module.exports = {
-    buildContext
+  buildContext,
 };
