@@ -1,36 +1,42 @@
 // =========================================
-// Memory Retriever IRAT AI v0.2.0
-// Mengambil memory yang relevan
+// Memory Retriever IRAT AI v0.3.0
+// Intelligent Memory Retrieval
 // =========================================
 
 const longMemory = require("./longMemory");
+const { detectIntent } = require("./intentDetector");
+const { rankMemories } = require("./memoryRanker");
 
-
+/**
+ * Mengambil memory yang paling relevan
+ */
 async function retrieveMemory(userId, message) {
 
+    // Ambil semua memory user
     const memories = await longMemory.getMemories(userId);
 
-    const keywords = message
-        .toLowerCase()
-        .split(" ")
-        .filter(word => word.length > 3);
+    // Jika belum ada memory
+    if (!memories || memories.length === 0) {
+        return [];
+    }
 
+    // Deteksi intent
+    const { intent } = detectIntent(message);
 
-    const relevant = memories.filter(memory => {
+    // Ranking memory
+    const ranked = rankMemories(
+        memories,
+        message,
+        intent
+    );
 
-        const content = memory.content.toLowerCase();
+    // Ambil hanya memory yang benar-benar relevan
+    const relevant = ranked.filter(memory => memory.score > 0);
 
-        return keywords.some(keyword =>
-            content.includes(keyword)
-        );
-
-    });
-
-
-    return relevant;
+    // Maksimal kirim 5 memory ke AI
+    return relevant.slice(0, 5);
 
 }
-
 
 module.exports = {
     retrieveMemory
