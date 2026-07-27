@@ -3,8 +3,9 @@
 // Menggabungkan Short Memory & Long Memory
 // =========================================
 
-const shortMemory = require("./shortMemory");
 const longMemory = require("./longMemory");
+const profileManager = require("./profileManager");
+const shortMemory = require("./shortMemory");
 
 /**
  * Tambahkan pesan ke short memory
@@ -24,7 +25,7 @@ function getConversation(sessionId) {
  * Simpan long memory
  */
 async function saveLongMemory(userId, category, content, importance = 1) {
-    return await longMemory.saveMemory(
+    return await profileManager.saveProfileMemory(
         userId,
         category,
         content,

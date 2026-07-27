@@ -25,6 +25,12 @@ const INTENTS = {
         "makanan",
         "minuman",
         "hobi",
+        "hobiku",
+        "musik",
+        "lagu",
+        "film",
+        "genre",
+        "olahraga",
     ],
 
     project: [

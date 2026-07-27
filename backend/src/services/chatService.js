@@ -1,3 +1,9 @@
+// =========================================
+
+// Chat Service IRAT-AI v0.4.0
+
+// =========================================
+
 const aiEngine = require("../ai/engine");
 
 const memoryManager = require("../memory/memoryManager");
@@ -37,9 +43,13 @@ if (extractedMemory) {
 
     // Ambil memory yang relevan
     const memories = await memoryRetriever.retrieveMemory(
-        userId,
-        message
-    );
+    userId,
+    message
+);
+
+console.log("MESSAGE:", message);
+console.log("MEMORIES:", memories);
+
 
 
     // Simpan percakapan user

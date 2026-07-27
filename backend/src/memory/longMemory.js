@@ -34,6 +34,38 @@ async function getMemoriesByCategory(userId, category) {
     );
 }
 
+async function getLatestMemoryByCategory(
+    userId,
+    category
+) {
+    const memories =
+        await memoryRepository.getMemoriesByCategory(
+            userId,
+            category
+        );
+
+    if (!memories.length) {
+        return null;
+    }
+
+    return memories[0];
+}
+
+/**
+ * Update memory
+ */
+async function updateMemory(
+    id,
+    content,
+    importance = 1
+) {
+    return await memoryRepository.updateMemory(
+        id,
+        content,
+        importance
+    );
+}
+
 /**
  * Hapus memory
  */
@@ -45,5 +77,7 @@ module.exports = {
     saveMemory,
     getMemories,
     getMemoriesByCategory,
+    getLatestMemoryByCategory,
+    updateMemory,
     deleteMemory
 };

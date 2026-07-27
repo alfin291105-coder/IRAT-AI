@@ -4,75 +4,82 @@
 // =========================================
 
 exports.generate = async (prompt) => {
+  const text = prompt.toLowerCase();
 
-    const text = prompt.toLowerCase();
+  // Ambil CURRENT QUESTION
+  const questionMatch = prompt.match(
+    /CURRENT QUESTION\s*([\s\S]*?)=========================/i,
+  );
 
-    // ==========================
-    // Nama
-    // ==========================
-    if (
-        text.includes("siapa nama saya") &&
-        text.includes("nama saya")
-    ) {
+  const question = questionMatch ? questionMatch[1].trim() : "";
 
-        const match = prompt.match(/Nama saya ([^\n]+)/i);
+  const questionText = question.toLowerCase();
 
-        if (match) {
-            return `Nama kamu ${match[1].trim()}.`;
-        }
+  console.log("QUESTION:", question);
 
-        return "Maaf, saya belum mengetahui nama kamu.";
+  if (questionText.startsWith("nama saya")) {
+    return "Baik, saya akan mengingat nama kamu.";
+  }
+
+  if (questionText.startsWith("hobi saya")) {
+    return "Baik, saya akan mengingat hobi kamu.";
+  }
+
+  if (questionText.startsWith("saya bekerja")) {
+    return "Baik, saya akan mengingat pekerjaan kamu.";
+  }
+
+  // ==========================
+  // Nama
+  // ==========================
+  if (questionText.includes("siapa nama saya")) {
+    const match = prompt.match(/Nama saya ([^\n]+)/i);
+
+    if (match) {
+      return `Nama kamu ${match[1].trim()}.`;
     }
 
-    // ==========================
-    // Warna favorit
-    // ==========================
-    if (
-        text.includes("warna") &&
-        text.includes("saya suka")
-    ) {
+    return "Maaf, saya belum mengetahui nama kamu.";
+  }
 
-        const match = prompt.match(/Saya suka (.+)/i);
+  // ==========================
+  // Warna favorit
+  // ==========================
+  if (questionText.includes("warna") && questionText.includes("saya suka")) {
+    const match = prompt.match(/Saya suka (.+)/i);
 
-        if (match) {
-            return `Kamu menyukai ${match[1].trim()}.`;
-        }
-
+    if (match) {
+      return `Kamu menyukai ${match[1].trim()}.`;
     }
+  }
 
-    // ==========================
-    // Pekerjaan
-    // ==========================
-    if (
-        text.includes("pekerjaan saya") ||
-        text.includes("saya bekerja")
-    ) {
+  // ==========================
+  // Pekerjaan
+  // ==========================
+  if (
+    questionText.includes("pekerjaan saya") ||
+    questionText.includes("saya bekerja")
+  ) {
+    const match = prompt.match(/Saya bekerja sebagai ([^\n]+)/i);
 
-        const match = prompt.match(/Saya bekerja sebagai ([^\n]+)/i);
-
-        if (match) {
-            return `Pekerjaan kamu adalah ${match[1].trim()}.`;
-        }
-
+    if (match) {
+      return `Pekerjaan kamu adalah ${match[1].trim()}.`;
     }
+  }
 
-    // ==========================
-    // Hobi
-    // ==========================
-    if (
-        text.includes("hobi saya")
-    ) {
+  // ==========================
+  // Hobi
+  // ==========================
+  if (questionText.includes("hobi saya")) {
+    const match = prompt.match(/Hobi saya (.+)/i);
 
-        const match = prompt.match(/Hobi saya (.+)/i);
-
-        if (match) {
-            return `Hobi kamu adalah ${match[1].trim()}.`;
-        }
-
+    if (match) {
+      return `Hobi kamu adalah ${match[1].trim()}.`;
     }
+  }
 
-    // ==========================
-    // Default
-    // ==========================
-    return "Maaf, saya belum mengetahui jawabannya.";
+  // ==========================
+  // Default
+  // ==========================
+  return "Maaf, saya belum mengetahui jawabannya.";
 };

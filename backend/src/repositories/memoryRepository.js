@@ -82,6 +82,35 @@ function getMemoriesByCategory(userId, category) {
 }
 
 /**
+ * Update memory
+ */
+function updateMemory(id, content, importance) {
+    return new Promise((resolve, reject) => {
+
+        db.run(
+            `
+            UPDATE memories
+            SET
+                content = ?,
+                importance = ?,
+                updatedAt = CURRENT_TIMESTAMP
+            WHERE id = ?
+            `,
+            [content, importance, id],
+            function (err) {
+
+                if (err) {
+                    return reject(err);
+                }
+
+                resolve(this.changes);
+            }
+        );
+
+    });
+}
+
+/**
  * Hapus memory
  */
 function deleteMemory(id) {
@@ -110,5 +139,6 @@ module.exports = {
     saveMemory,
     getMemories,
     getMemoriesByCategory,
+    updateMemory,
     deleteMemory
 };
