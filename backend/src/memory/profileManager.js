@@ -4,7 +4,7 @@
 // =========================================
 
 const { PROFILE_CATEGORIES } = require("./config/profileCategories");
-const longMemory = require("./longMemory");
+const memoryRepository = require("../repositories/memoryRepository");
 
 async function saveProfileMemory(
     userId,
@@ -18,12 +18,12 @@ async function saveProfileMemory(
     // kategori tidak ada di konfigurasi
     if (!config) {
 
-        return await longMemory.saveMemory(
-            userId,
-            category,
-            content,
-            importance
-        );
+        return await memoryRepository.saveMemory(
+    userId,
+    category,
+    content,
+    importance
+);
 
     }
 
@@ -31,7 +31,7 @@ async function saveProfileMemory(
     // kategori boleh memiliki banyak data
     if (config.multiple) {
 
-        return await longMemory.saveMemory(
+        return await memoryRepository.saveMemory(
             userId,
             category,
             content,
@@ -43,16 +43,16 @@ async function saveProfileMemory(
 
     // kategori hanya satu data
     const latestMemory =
-        await longMemory.getLatestMemoryByCategory(
-            userId,
-            category
-        );
+    await memoryRepository.getLatestMemoryByCategory(
+        userId,
+        category
+    );
 
 
     // belum ada data → buat baru
     if (!latestMemory) {
 
-        return await longMemory.saveMemory(
+        return await memoryRepository.saveMemory(
             userId,
             category,
             content,
@@ -63,7 +63,7 @@ async function saveProfileMemory(
 
 
     // sudah ada → update
-    return await longMemory.updateMemory(
+    return await memoryRepository.updateMemory(
         latestMemory.id,
         content,
         importance

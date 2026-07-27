@@ -1,9 +1,10 @@
 const db = require("./db");
+const { SQLITE_NOW } = require("../config/database");
 
 db.serialize(() => {
 
     // ==========================
-    // Tabel Messages (v0.1.0)
+    // Tabel Messages (v0.4.0)
     // ==========================
     db.run(`
         CREATE TABLE IF NOT EXISTS messages (
@@ -11,7 +12,8 @@ db.serialize(() => {
             userId TEXT,
             message TEXT,
             reply TEXT,
-            createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+            createdAt DATETIME DEFAULT ${SQLITE_NOW},
+            updatedAt DATETIME DEFAULT ${SQLITE_NOW}
         )
     `);
 
@@ -24,7 +26,8 @@ db.serialize(() => {
             sessionId TEXT NOT NULL,
             role TEXT NOT NULL,
             message TEXT NOT NULL,
-            createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+            createdAt DATETIME DEFAULT ${SQLITE_NOW},
+            updatedAt DATETIME DEFAULT ${SQLITE_NOW}
         )
     `);
 
@@ -38,8 +41,8 @@ db.serialize(() => {
             category TEXT NOT NULL,
             content TEXT NOT NULL,
             importance INTEGER DEFAULT 1,
-            createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-            updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+            createdAt DATETIME DEFAULT ${SQLITE_NOW},
+            updatedAt DATETIME DEFAULT ${SQLITE_NOW}
         )
     `);
 

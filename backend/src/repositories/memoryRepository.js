@@ -1,3 +1,8 @@
+// =========================================
+// Memory Repository IRAT AI v0.4.0
+// Mengelola penyimpanan memory
+// =========================================
+
 const db = require("../database/db");
 
 /**
@@ -82,6 +87,35 @@ function getMemoriesByCategory(userId, category) {
 }
 
 /**
+ * Ambil memory terbaru berdasarkan kategori
+ */
+function getLatestMemoryByCategory(userId, category) {
+    return new Promise((resolve, reject) => {
+
+        db.get(
+            `
+            SELECT *
+            FROM memories
+            WHERE userId = ?
+            AND category = ?
+            ORDER BY updatedAt DESC
+            LIMIT 1
+            `,
+            [userId, category],
+            (err, row) => {
+
+                if (err) {
+                    return reject(err);
+                }
+
+                resolve(row);
+            }
+        );
+
+    });
+}
+
+/**
  * Update memory
  */
 function updateMemory(id, content, importance) {
@@ -139,6 +173,7 @@ module.exports = {
     saveMemory,
     getMemories,
     getMemoriesByCategory,
+    getLatestMemoryByCategory,
     updateMemory,
     deleteMemory
 };
