@@ -6,6 +6,7 @@
 const { formatMessages } = require("./messageFormatter");
 const { selectContext } = require("./contextSelector");
 const { optimizeContext } = require("./contextOptimizer");
+const conversationState = require("./conversationState");
 
 const DEFAULT_LIMIT = 10;
 
@@ -14,6 +15,11 @@ function buildContext(
   currentQuestion = "",
   limit = DEFAULT_LIMIT,
 ) {
+  conversationState.updateState(
+  currentQuestion,
+  "user"
+);
+
   const selectedMessages = selectContext(messages, currentQuestion, limit);
 
   const optimizedMessages = optimizeContext(selectedMessages);
