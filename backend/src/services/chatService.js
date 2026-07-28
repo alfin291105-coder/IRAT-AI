@@ -21,13 +21,42 @@ exports.reply = async (message, sessionId = "default", userId = "guest") => {
   const extractedMemory = memoryExtractor.extractMemory(message);
 
   if (extractedMemory) {
-    await memoryManager.saveLongMemory(
+
+  const duplicate =
+    await memoryManager.hasDuplicateMemory(
       userId,
-      extractedMemory.category,
-      extractedMemory.content,
-      extractedMemory.importance,
+      extractedMemory
     );
+
+  if (!duplicate) {
+
+    const existingMemory =
+      await memoryManager.findMemoryForUpdate(
+        userId,
+        extractedMemory
+      );
+
+    if (existingMemory) {
+
+      await memoryManager.updateLongMemory(
+        existingMemory.id,
+        extractedMemory
+      );
+
+    } else {
+
+      await memoryManager.saveLongMemory(
+        userId,
+        extractedMemory.category,
+        extractedMemory.content,
+        extractedMemory.importance
+      );
+
+    }
+
   }
+
+}
 
   // Ambil memory yang relevan
   const memories = await memoryRetriever.retrieveMemory(userId, message);

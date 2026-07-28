@@ -137,7 +137,7 @@ function updateMemory(id, content, importance) {
                     return reject(err);
                 }
 
-                resolve(this.changes);
+                resolve(this.changes > 0);
             }
         );
 

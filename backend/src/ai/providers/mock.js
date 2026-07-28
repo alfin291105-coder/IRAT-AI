@@ -4,6 +4,7 @@
 // =========================================
 
 exports.generate = async (prompt) => {
+    console.log(prompt);
   const text = prompt.toLowerCase();
 
   // Ambil CURRENT QUESTION
@@ -15,7 +16,15 @@ exports.generate = async (prompt) => {
 
   const questionText = question.toLowerCase();
 
-  
+  // ==========================
+  // Follow Up Question
+  // ==========================
+
+  const historyMatch = prompt.match(
+    /CONVERSATION HISTORY([\s\S]*?)=========================/i,
+  );
+
+  const history = historyMatch ? historyMatch[1] : "";
 
   if (questionText.startsWith("nama saya")) {
     return "Baik, saya akan mengingat nama kamu.";
@@ -80,6 +89,21 @@ exports.generate = async (prompt) => {
 
     if (match) {
       return `Pekerjaan kamu adalah ${match[1].trim()}.`;
+    }
+  }
+
+  // ==========================
+  // Follow Up Hobby
+  // ==========================
+
+  if (
+    questionText.includes("apa yang saya suka") ||
+    questionText.includes("yang saya suka")
+  ) {
+    const match = history.match(/saya suka (.+)/i);
+
+    if (match) {
+      return `Kamu suka ${match[1].trim()}.`;
     }
   }
 

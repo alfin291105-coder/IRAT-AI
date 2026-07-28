@@ -30,9 +30,15 @@ Content: ${memory.content}
   message,
 );
 
+const formattedMessages =
+  conversationContext.messages || [];
+
+const contextMetadata =
+  conversationContext.metadata || {};
+
   const historySection =
-  conversationContext.length > 0
-    ? conversationContext
+  formattedMessages.length > 0
+    ? formattedMessages
         .map(
           (chat) => `
 ${chat.role}: ${chat.content}
@@ -74,6 +80,13 @@ ${memorySection}
 CONVERSATION HISTORY
 
 ${historySection}
+
+=========================
+
+CONVERSATION STATE
+
+Follow Up:
+${contextMetadata.followUp ? "Ya" : "Tidak"}
 
 =========================
 

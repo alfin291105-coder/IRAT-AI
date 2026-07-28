@@ -7,6 +7,7 @@ const { formatMessages } = require("./messageFormatter");
 const { selectContext } = require("./contextSelector");
 const { optimizeContext } = require("./contextOptimizer");
 const conversationState = require("./conversationState");
+const { isFollowUp } = require("./followUpDetector");
 
 const DEFAULT_LIMIT = 10;
 
@@ -15,16 +16,26 @@ function buildContext(
   currentQuestion = "",
   limit = DEFAULT_LIMIT,
 ) {
-  conversationState.updateState(
-  currentQuestion,
-  "user"
-);
+  conversationState.updateState(currentQuestion, "user");
+  const followUp = isFollowUp(currentQuestion);
 
-  const selectedMessages = selectContext(messages, currentQuestion, limit);
+  let contextMessages = messages.filter(
+  message => message.content
+);
+  
+  if (followUp) {
+    contextMessages = [
+        ...messages.slice(-5)
+    ];
+}
+
+  const selectedMessages = selectContext(contextMessages, currentQuestion, limit);
 
   const optimizedMessages = optimizeContext(selectedMessages);
 
-  return formatMessages(optimizedMessages);
+  return formatMessages(optimizedMessages, {
+    followUp,
+  });
 }
 
 module.exports = {

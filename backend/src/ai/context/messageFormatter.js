@@ -10,12 +10,21 @@ function formatMessage(role, content) {
     };
 }
 
-function formatMessages(messages = []) {
-    return messages.map(message => ({
-        role: message.role,
-        content: message.content
-    }));
+
+function formatMessages(
+    messages = [],
+    metadata = {}
+) {
+    return {
+        messages: messages.map(message => ({
+            role: message.role,
+            content: message.content
+        })),
+
+        metadata
+    };
 }
+
 
 module.exports = {
     formatMessage,

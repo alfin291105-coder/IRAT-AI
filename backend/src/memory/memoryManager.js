@@ -6,6 +6,9 @@
 const longMemory = require("./longMemory");
 const profileManager = require("./profileManager");
 const shortMemory = require("./shortMemory");
+const duplicateMemoryDetector = require("./duplicateMemoryDetector");
+const memoryUpdater = require("./memoryUpdater");
+const memoryRepository = require("../repositories/memoryRepository");
 
 /**
  * Tambahkan pesan ke short memory
@@ -41,6 +44,41 @@ async function getLongMemory(userId) {
 }
 
 /**
+ * Cek apakah memory ke duplikat 
+ */
+async function hasDuplicateMemory(userId, memory) {
+    const memories = await longMemory.getMemories(userId);
+
+    return duplicateMemoryDetector.isDuplicate(
+        memory,
+        memories
+    );
+}
+
+/**
+ * Cari memory yang cocok untuk di update
+ */
+async function findMemoryForUpdate(userId, memory) {
+    const memories = await longMemory.getMemories(userId);
+
+    return memoryUpdater.findMemoryToUpdate(
+        memory,
+        memories
+    );
+}
+
+/**
+ * Update long memory
+ */
+async function updateLongMemory(memoryId, memory) {
+    return await memoryRepository.updateMemory(
+        memoryId,
+        memory.content,
+        memory.importance
+    );
+}
+
+/**
  * Hapus session
  */
 function clearConversation(sessionId) {
@@ -52,5 +90,8 @@ module.exports = {
     getConversation,
     saveLongMemory,
     getLongMemory,
+    hasDuplicateMemory,
+    findMemoryForUpdate,
+    updateLongMemory,
     clearConversation
 };

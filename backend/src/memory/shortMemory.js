@@ -18,10 +18,10 @@ function addMessage(sessionId, role, message) {
     const history = shortMemory.get(sessionId);
 
     history.push({
-        role,
-        message,
-        timestamp: new Date().toISOString()
-    });
+    role,
+    content: message,
+    timestamp: new Date().toISOString()
+});
 
     // Simpan hanya MAX_HISTORY pesan terakhir
     if (history.length > MAX_HISTORY) {
