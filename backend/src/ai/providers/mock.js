@@ -15,7 +15,7 @@ exports.generate = async (prompt) => {
 
   const questionText = question.toLowerCase();
 
-  console.log("QUESTION:", question);
+  
 
   if (questionText.startsWith("nama saya")) {
     return "Baik, saya akan mengingat nama kamu.";
@@ -93,7 +93,7 @@ exports.generate = async (prompt) => {
       return `Hobi kamu adalah ${match[1].trim()}.`;
     }
   }
-  
+
   // ==========================
   // Project
   // ==========================

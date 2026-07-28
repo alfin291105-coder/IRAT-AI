@@ -36,8 +36,6 @@ exports.reply = async (message, sessionId = "default", userId = "guest") => {
 
   const profile = await memoryManager.getLongMemory(userId);
 
-  console.log("MESSAGE:", message);
-  console.log("MEMORIES:", memories);
 
   // Simpan percakapan user
   await conversationRepository.saveConversation(sessionId, "user", message);
@@ -51,9 +49,7 @@ exports.reply = async (message, sessionId = "default", userId = "guest") => {
 
   // Simpan balasan AI ke memory
   memoryManager.addConversation(sessionId, "assistant", reply);
-  const detectedIntent = intentDetector.detectIntent(message);
-
-  console.log("INTENT:", detectedIntent);
+  const detectedIntent = intentDetector.detectIntent(message);  
 
   // Simpan balasan AI
   await conversationRepository.saveConversation(sessionId, "assistant", reply);
