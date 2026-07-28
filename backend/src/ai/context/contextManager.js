@@ -5,6 +5,7 @@
 
 const { formatMessages } = require("./messageFormatter");
 const { selectContext } = require("./contextSelector");
+const { optimizeContext } = require("./contextOptimizer");
 
 const DEFAULT_LIMIT = 10;
 
@@ -15,7 +16,9 @@ function buildContext(
 ) {
   const selectedMessages = selectContext(messages, currentQuestion, limit);
 
-  return formatMessages(selectedMessages);
+  const optimizedMessages = optimizeContext(selectedMessages);
+
+  return formatMessages(optimizedMessages);
 }
 
 module.exports = {
