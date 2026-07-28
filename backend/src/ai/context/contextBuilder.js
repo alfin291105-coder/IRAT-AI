@@ -3,39 +3,53 @@
 // Menyusun context untuk AI
 // =========================================
 
+const contextManager = require("./contextManager");
+
 function buildContext({
   message,
   memories = [],
   conversationHistory = [],
-  profile = []
+  profile = [],
 }) {
-
   const memorySection =
     memories.length > 0
-      ? memories.map((memory, index) => `
+      ? memories
+          .map(
+            (memory, index) => `
 [Memory ${index + 1}]
 Category: ${memory.category}
 Importance: ${memory.importance}
 Content: ${memory.content}
-`).join("\n")
+`,
+          )
+          .join("\n")
       : "Tidak ada memory yang relevan.";
 
+  const conversationContext = contextManager.buildContext(
+  conversationHistory,
+  );
 
   const historySection =
-    conversationHistory.length > 0
-      ? conversationHistory.map((chat) => `
-${chat.role}: ${chat.message}
-`).join("\n")
-      : "Tidak ada percakapan sebelumnya.";
-
+  conversationContext.length > 0
+    ? conversationContext
+        .map(
+          (chat) => `
+${chat.role}: ${chat.content}
+`,
+        )
+        .join("\n")
+    : "Tidak ada percakapan sebelumnya.";
 
   const profileSection =
     profile.length > 0
-      ? profile.map((item) => `
+      ? profile
+          .map(
+            (item) => `
 ${item.category}: ${item.content}
-`).join("\n")
+`,
+          )
+          .join("\n")
       : "Tidak ada profile pengguna.";
-
 
   return `
 SYSTEM
