@@ -5,7 +5,7 @@
 const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
 
-const dbPath = path.join(__dirname, "../../data/irat.db");
+const dbPath = path.join(__dirname, "../../data/IЯAT.db");
 
 console.log("Database Path:", dbPath);
 

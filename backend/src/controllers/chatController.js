@@ -1,3 +1,7 @@
+///----------------------------------------------
+/// Chat Controller
+///----------------------------------------------
+
 const chatService = require("../services/chatService");
 
 exports.chat = async (req, res) => {

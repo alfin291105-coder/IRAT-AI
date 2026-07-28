@@ -11,9 +11,17 @@ exports.chat = async (
 ) => {
 
     const prompt = contextBuilder.buildContext({
-        message,
-        memories: context.memories || []
-    });
+    message,
+
+    memories:
+        context.memories || [],
+
+    conversationHistory:
+        context.conversationHistory || [],
+
+    profile:
+        context.profile || []
+});
 
     const reply = await provider.generate(prompt);
 

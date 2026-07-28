@@ -30,6 +30,22 @@ exports.generate = async (prompt) => {
   }
 
   // ==========================
+  // Greeting
+  // ==========================
+
+  if (["halo", "hai", "hi", "hello"].includes(questionText)) {
+    return "Hai! Saya IЯAT AI, asisten AI pribadi kamu. Ada yang bisa saya bantu hari ini?";
+  }
+
+  if (questionText.includes("apa kabar")) {
+    return "Baik, terima kasih. Ada yang ingin kamu tanyakan?";
+  }
+
+  if (questionText === "terima kasih" || questionText === "makasih") {
+    return "Sama-sama. Senang bisa membantu.";
+  }
+
+  // ==========================
   // Nama
   // ==========================
   if (questionText.includes("siapa nama saya")) {
@@ -76,6 +92,23 @@ exports.generate = async (prompt) => {
     if (match) {
       return `Hobi kamu adalah ${match[1].trim()}.`;
     }
+  }
+  
+  // ==========================
+  // Project
+  // ==========================
+
+  if (
+    questionText.includes("project saya") ||
+    questionText.includes("proyek saya")
+  ) {
+    const match = prompt.match(/Project (.+)/i);
+
+    if (match) {
+      return `Project kamu adalah ${match[0].trim()}.`;
+    }
+
+    return "Maaf, saya belum mengetahui project kamu.";
   }
 
   // ==========================

@@ -3,26 +3,56 @@
 // Menyusun context untuk AI
 // =========================================
 
-function buildContext({ message, memories = [] }) {
-  const memoryCount = memories.length;
+function buildContext({
+  message,
+  memories = [],
+  conversationHistory = [],
+  profile = []
+}) {
 
   const memorySection =
     memories.length > 0
-      ? memories
-          .map((memory, index) => `
-            [Memory ${index + 1}]
-            Category: ${memory.category}
-            Importance: ${memory.importance}
-            Content: ${memory.content}`)
-          .join("\n")
+      ? memories.map((memory, index) => `
+[Memory ${index + 1}]
+Category: ${memory.category}
+Importance: ${memory.importance}
+Content: ${memory.content}
+`).join("\n")
       : "Tidak ada memory yang relevan.";
+
+
+  const historySection =
+    conversationHistory.length > 0
+      ? conversationHistory.map((chat) => `
+${chat.role}: ${chat.message}
+`).join("\n")
+      : "Tidak ada percakapan sebelumnya.";
+
+
+  const profileSection =
+    profile.length > 0
+      ? profile.map((item) => `
+${item.category}: ${item.content}
+`).join("\n")
+      : "Tidak ada profile pengguna.";
+
 
   return `
 SYSTEM
 
 Kamu adalah IRAT AI.
 
-Asisten pribadi pengguna.
+=========================
+
+USER PROFILE
+
+${profileSection}
+
+=========================
+
+CONVERSATION HISTORY
+
+${historySection}
 
 =========================
 
@@ -40,9 +70,9 @@ ${message}
 
 INSTRUCTION
 
-- Gunakan memory jika relevan.
-- Jika memory tidak cukup, katakan kamu belum mengetahui jawabannya.
-- Jangan membuat informasi yang tidak ada di memory.
+- Gunakan profile dan memory jika relevan.
+- Gunakan riwayat percakapan jika membantu.
+- Jangan membuat informasi yang tidak ada.
 `;
 }
 

@@ -9,82 +9,54 @@ const aiEngine = require("../ai/engine");
 const memoryManager = require("../memory/memoryManager");
 const memoryRetriever = require("../memory/memoryRetriever");
 const memoryExtractor = require("../memory/memoryExtractor");
+const intentDetector = require("../memory/intentDetector");
 
 const conversationRepository = require("../repositories/conversationRepository");
 
+exports.reply = async (message, sessionId = "default", userId = "guest") => {
+  // Simpan pesan user ke memory
+  memoryManager.addConversation(sessionId, "user", message);
 
-exports.reply = async (
-    message,
-    sessionId = "default",
-    userId = "guest"
-) => {
+  // Extract memory penting dari pesan user
+  const extractedMemory = memoryExtractor.extractMemory(message);
 
-    // Simpan pesan user ke memory
-    memoryManager.addConversation(
-        sessionId,
-        "user",
-        message
-    );
-
-    // Extract memory penting dari pesan user
-const extractedMemory = memoryExtractor.extractMemory(message);
-
-if (extractedMemory) {
-
+  if (extractedMemory) {
     await memoryManager.saveLongMemory(
-        userId,
-        extractedMemory.category,
-        extractedMemory.content,
-        extractedMemory.importance
+      userId,
+      extractedMemory.category,
+      extractedMemory.content,
+      extractedMemory.importance,
     );
+  }
 
-}
+  // Ambil memory yang relevan
+  const memories = await memoryRetriever.retrieveMemory(userId, message);
 
+  const conversationHistory = memoryManager.getConversation(sessionId);
 
-    // Ambil memory yang relevan
-    const memories = await memoryRetriever.retrieveMemory(
-    userId,
-    message
-);
+  const profile = await memoryManager.getLongMemory(userId);
 
-console.log("MESSAGE:", message);
-console.log("MEMORIES:", memories);
+  console.log("MESSAGE:", message);
+  console.log("MEMORIES:", memories);
 
+  // Simpan percakapan user
+  await conversationRepository.saveConversation(sessionId, "user", message);
 
+  // Kirim pesan + memory ke AI
+  const reply = await aiEngine.chat(message, {
+    memories,
+    conversationHistory,
+    profile,
+  });
 
-    // Simpan percakapan user
-    await conversationRepository.saveConversation(
-        sessionId,
-        "user",
-        message
-    );
+  // Simpan balasan AI ke memory
+  memoryManager.addConversation(sessionId, "assistant", reply);
+  const detectedIntent = intentDetector.detectIntent(message);
 
+  console.log("INTENT:", detectedIntent);
 
-    // Kirim pesan + memory ke AI
-    const reply = await aiEngine.chat(
-        message,
-        {
-            memories
-        }
-    );
+  // Simpan balasan AI
+  await conversationRepository.saveConversation(sessionId, "assistant", reply);
 
-
-    // Simpan balasan AI ke memory
-    memoryManager.addConversation(
-        sessionId,
-        "assistant",
-        reply
-    );
-
-
-    // Simpan balasan AI
-    await conversationRepository.saveConversation(
-        sessionId,
-        "assistant",
-        reply
-    );
-
-
-    return reply;
-
+  return reply;
 };

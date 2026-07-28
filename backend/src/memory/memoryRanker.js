@@ -25,29 +25,31 @@ function calculateScore(memory, message, detectedIntent) {
   // Keyword matching
   const words = messageText.split(" ").filter((word) => word.length >= 3);
 
+  let keywordMatches = 0;
+
   for (const word of words) {
     if (content.includes(word)) {
+      keywordMatches++;
       score += 10;
     }
   }
 
-  // Importance
-  score += (memory.importance || 0) * 5;
-
-  // Recency
-  score += calculateRecency(memory);
-
+  // Importance & Recency hanya jika memory memang relevan
+  if (keywordMatches > 0 || memory.category === detectedIntent) {
+    score += (memory.importance || 0) * 5;
+    score += calculateRecency(memory);
+  }
   return score;
 }
 
 function calculateRecency(memory) {
   const timestamp = memory.updatedAt || memory.createdAt;
 
-if (!timestamp) {
-  return 0;
-}
+  if (!timestamp) {
+    return 0;
+  }
 
-const age = Date.now() - new Date(timestamp).getTime();
+  const age = Date.now() - new Date(timestamp).getTime();
 
   const days = age / (1000 * 60 * 60 * 24);
 
