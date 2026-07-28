@@ -4,15 +4,20 @@
 // =========================================
 
 const { formatMessages } = require("./messageFormatter");
+const { selectContext } = require("./contextSelector");
 
 const DEFAULT_LIMIT = 10;
 
-function buildContext(messages = [], limit = DEFAULT_LIMIT) {
-    const recentMessages = messages.slice(-limit);
+function buildContext(
+  messages = [],
+  currentQuestion = "",
+  limit = DEFAULT_LIMIT,
+) {
+  const selectedMessages = selectContext(messages, currentQuestion, limit);
 
-    return formatMessages(recentMessages);
+  return formatMessages(selectedMessages);
 }
 
 module.exports = {
-    buildContext
+  buildContext,
 };

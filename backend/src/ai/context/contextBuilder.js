@@ -27,7 +27,8 @@ Content: ${memory.content}
 
   const conversationContext = contextManager.buildContext(
   conversationHistory,
-  );
+  message,
+);
 
   const historySection =
   conversationContext.length > 0
