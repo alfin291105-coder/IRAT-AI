@@ -4,17 +4,17 @@
 
 const provider = require("./providers/mock");
 const contextBuilder = require("./context/contextBuilder");
+const { buildMemoryContext } = require("./context/memoryContext");
 
-exports.chat = async (
+exports.chat = async (message, context = {}) => {
+  const memories = buildMemoryContext(
+    context.memories || []
+);
+
+const prompt = contextBuilder.buildContext({
     message,
-    context = {}
-) => {
 
-    const prompt = contextBuilder.buildContext({
-    message,
-
-    memories:
-        context.memories || [],
+    memories,
 
     conversationHistory:
         context.conversationHistory || [],
@@ -22,8 +22,8 @@ exports.chat = async (
     profile:
         context.profile || []
 });
+  
+  const reply = await provider.generate(prompt);
 
-    const reply = await provider.generate(prompt);
-
-    return reply;
+  return reply;
 };

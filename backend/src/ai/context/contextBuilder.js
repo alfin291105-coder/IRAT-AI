@@ -65,15 +65,15 @@ ${profileSection}
 
 =========================
 
-CONVERSATION HISTORY
+IMPORTANT MEMORIES
 
-${historySection}
+${memorySection}
 
 =========================
 
-RELEVANT MEMORIES
+CONVERSATION HISTORY
 
-${memorySection}
+${historySection}
 
 =========================
 

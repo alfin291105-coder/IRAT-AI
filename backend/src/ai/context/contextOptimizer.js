@@ -7,6 +7,14 @@ const { estimateMessages } = require("./tokenEstimator");
 
 const DEFAULT_TOKEN_LIMIT = 500;
 
+function isImportantContext(item) {
+    return (
+        item.category === "identity" ||
+        item.category === "preference" ||
+        item.importance >= 8
+    );
+}
+
 function optimizeContext(
     messages = [],
     tokenLimit = DEFAULT_TOKEN_LIMIT
@@ -17,7 +25,18 @@ function optimizeContext(
         estimateMessages(optimizedMessages) > tokenLimit &&
         optimizedMessages.length > 1
     ) {
-        optimizedMessages.shift();
+        const removableIndex = optimizedMessages.findIndex(
+            item => !isImportantContext(item)
+        );
+
+        if (removableIndex === -1) {
+            break;
+        }
+
+        optimizedMessages.splice(
+            removableIndex,
+            1
+        );
     }
 
     return optimizedMessages;
