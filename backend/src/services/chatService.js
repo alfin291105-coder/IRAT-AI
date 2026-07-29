@@ -21,42 +21,32 @@ exports.reply = async (message, sessionId = "default", userId = "guest") => {
   const extractedMemory = memoryExtractor.extractMemory(message);
 
   if (extractedMemory) {
-
-  const duplicate =
-    await memoryManager.hasDuplicateMemory(
+    const duplicate = await memoryManager.hasDuplicateMemory(
       userId,
-      extractedMemory
+      extractedMemory,
     );
 
-  if (!duplicate) {
-
-    const existingMemory =
-      await memoryManager.findMemoryForUpdate(
+    if (!duplicate) {
+      const existingMemory = await memoryManager.findMemoryForUpdate(
         userId,
-        extractedMemory
+        extractedMemory,
       );
 
-    if (existingMemory) {
-
-      await memoryManager.updateLongMemory(
-        existingMemory.id,
-        extractedMemory
-      );
-
-    } else {
-
-      await memoryManager.saveLongMemory(
-        userId,
-        extractedMemory.category,
-        extractedMemory.content,
-        extractedMemory.importance
-      );
-
+      if (existingMemory) {
+        await memoryManager.updateLongMemory(
+          existingMemory.id,
+          extractedMemory,
+        );
+      } else {
+        await memoryManager.saveLongMemory(
+          userId,
+          extractedMemory.category,
+          extractedMemory.content,
+          extractedMemory.importance,
+        );
+      }
     }
-
   }
-
-}
 
   // Ambil memory yang relevan
   const memories = await memoryRetriever.retrieveMemory(userId, message);
@@ -64,7 +54,8 @@ exports.reply = async (message, sessionId = "default", userId = "guest") => {
   const conversationHistory = memoryManager.getConversation(sessionId);
 
   const profile = await memoryManager.getLongMemory(userId);
-
+  console.log("Conversation History:");
+  console.log(conversationHistory);
 
   // Simpan percakapan user
   await conversationRepository.saveConversation(sessionId, "user", message);
@@ -78,7 +69,7 @@ exports.reply = async (message, sessionId = "default", userId = "guest") => {
 
   // Simpan balasan AI ke memory
   memoryManager.addConversation(sessionId, "assistant", reply);
-  const detectedIntent = intentDetector.detectIntent(message);  
+  const detectedIntent = intentDetector.detectIntent(message);
 
   // Simpan balasan AI
   await conversationRepository.saveConversation(sessionId, "assistant", reply);

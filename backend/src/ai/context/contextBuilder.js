@@ -4,6 +4,7 @@
 // =========================================
 
 const contextManager = require("./contextManager");
+const { resolvePronoun } = require("./pronounResolver");
 
 function buildContext({
   message,
@@ -24,28 +25,31 @@ Content: ${memory.content}
           )
           .join("\n")
       : "Tidak ada memory yang relevan.";
+      
 
   const conversationContext = contextManager.buildContext(
-  conversationHistory,
-  message,
-);
+    conversationHistory,
+    message,
+  );
 
-const formattedMessages =
-  conversationContext.messages || [];
+  console.log(conversationContext);
 
-const contextMetadata =
-  conversationContext.metadata || {};
+  const formattedMessages = conversationContext.messages || [];
+
+  const contextMetadata = conversationContext.metadata || {};
+
+  const pronounReference = resolvePronoun(formattedMessages);
 
   const historySection =
-  formattedMessages.length > 0
-    ? formattedMessages
-        .map(
-          (chat) => `
+    formattedMessages.length > 0
+      ? formattedMessages
+          .map(
+            (chat) => `
 ${chat.role}: ${chat.content}
 `,
-        )
-        .join("\n")
-    : "Tidak ada percakapan sebelumnya.";
+          )
+          .join("\n")
+      : "Tidak ada percakapan sebelumnya.";
 
   const profileSection =
     profile.length > 0
@@ -58,7 +62,7 @@ ${item.category}: ${item.content}
           .join("\n")
       : "Tidak ada profile pengguna.";
 
-  return `
+  const prompt = `
 SYSTEM
 
 Kamu adalah IRAT AI.
@@ -73,7 +77,7 @@ ${profileSection}
 
 IMPORTANT MEMORIES
 
-${memorySection}
+${memorySection} 
 
 =========================
 
@@ -90,6 +94,15 @@ ${contextMetadata.followUp ? "Ya" : "Tidak"}
 
 =========================
 
+PRONOUN REFERENCE
+
+${pronounReference
+    ? `Kata ganti mengacu pada: ${pronounReference}`
+    : "Tidak ada."
+}
+
+=========================
+
 CURRENT QUESTION
 
 ${message}
@@ -102,6 +115,8 @@ INSTRUCTION
 - Gunakan riwayat percakapan jika membantu.
 - Jangan membuat informasi yang tidak ada.
 `;
+  console.log(prompt);
+  return prompt;
 }
 
 module.exports = {

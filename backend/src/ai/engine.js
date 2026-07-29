@@ -7,22 +7,17 @@ const contextBuilder = require("./context/contextBuilder");
 const { buildMemoryContext } = require("./context/memoryContext");
 
 exports.chat = async (message, context = {}) => {
-  const memories = buildMemoryContext(
-    context.memories || []
-);
+  console.log("AI Engine: sebelum buildContext");
 
-const prompt = contextBuilder.buildContext({
+  const prompt = contextBuilder.buildContext({
     message,
+    memories: buildMemoryContext(context.memories || []),
+    conversationHistory: context.conversationHistory || [],
+    profile: context.profile || [],
+  });
 
-    memories,
+  console.log("AI Engine: sesudah buildContext");
 
-    conversationHistory:
-        context.conversationHistory || [],
-
-    profile:
-        context.profile || []
-});
-  
   const reply = await provider.generate(prompt);
 
   return reply;

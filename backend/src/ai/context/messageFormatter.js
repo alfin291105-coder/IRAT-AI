@@ -10,7 +10,6 @@ function formatMessage(role, content) {
     };
 }
 
-
 function formatMessages(
     messages = [],
     metadata = {}
@@ -20,11 +19,9 @@ function formatMessages(
             role: message.role,
             content: message.content
         })),
-
         metadata
     };
 }
-
 
 module.exports = {
     formatMessage,

@@ -1,101 +1,39 @@
-# IRAT AI Memory System
+# Context Engine
 
-Dokumentasi sistem memori yang digunakan oleh IRAT AI.
+## Conversation History
 
----
+- Menyimpan riwayat percakapan sementara.
+- Digunakan untuk follow up.
 
-## Overview
+## Follow Up Detector
 
-IRAT AI menggunakan kombinasi **Short Memory** dan **Long Memory** untuk memahami percakapan serta mengingat informasi penting pengguna.
+Mendeteksi pertanyaan lanjutan.
 
----
+Contoh:
 
-## Memory Flow
+User:
+Saya bertemu Andi.
 
-```text
-User Message
-      │
-      ▼
-Memory Extractor
-      │
-      ▼
-Memory Manager
-      │
-      ├── Short Memory
-      │
-      └── Long Memory
-              │
-              ▼
-       Memory Retriever
-              │
-              ▼
-        Memory Ranker
-              │
-              ▼
-       Context Builder
-              │
-              ▼
-          AI Engine
-```
+User:
+Dia bekerja di mana?
 
----
+Follow Up: Ya
 
-## Components
+## Pronoun Resolver
 
-### Short Memory
+Menghubungkan kata ganti dengan entity sebelumnya.
 
-Menyimpan riwayat percakapan dalam satu sesi.
+Contoh:
 
-### Long Memory
+Saya bertemu Andi.
+Dia bekerja di mana?
 
-Menyimpan informasi penting pengguna secara permanen di database.
+Dia → Andi
 
-### Memory Extractor
+## Context Optimizer
 
-Mengekstrak fakta penting dari pesan pengguna menggunakan rule-based extractor.
+Mengurangi context jika token melebihi batas.
 
-### Memory Manager
+## Context Selector
 
-Mengelola alur penyimpanan dan pengambilan memory.
-
-### Memory Ranker
-
-Menghitung relevansi memory berdasarkan:
-
-* Category
-* Keyword Matching
-* Importance
-* Recency
-
-### Memory Retriever
-
-Mengambil memory yang paling relevan untuk pertanyaan pengguna.
-
-### Context Builder
-
-Menyusun memory yang relevan menjadi context sebelum dikirim ke AI.
-
----
-
-## Memory Categories
-
-Saat ini IRAT AI mendukung kategori berikut:
-
-* identity
-* work
-* hobby
-* preference
-
-Kategori lain akan ditambahkan pada versi berikutnya.
-
----
-
-## Future Development
-
-* User Profile Manager
-* Memory Update
-* Memory Deduplication
-* Semantic Memory Search
-* Vector Memory
-* Memory Compression
-* Knowledge Graph
+Memilih pesan yang paling relevan.

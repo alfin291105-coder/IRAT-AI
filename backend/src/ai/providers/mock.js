@@ -4,7 +4,6 @@
 // =========================================
 
 exports.generate = async (prompt) => {
-    console.log(prompt);
   const text = prompt.toLowerCase();
 
   // Ambil CURRENT QUESTION
