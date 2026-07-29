@@ -11,7 +11,7 @@ function calculateScore(message, currentQuestion) {
     const content = (message.content || "").toLowerCase();
     const keywords = (currentQuestion || "")
     .toLowerCase()
-    .split(" ");;
+    .split(" ");
 
     let score = 0;
 

@@ -1,10 +1,11 @@
 // =========================================
-// Context Builder IRAT AI v0.3.0
+// Context Builder IRAT AI v0.6.0
 // Menyusun context untuk AI
 // =========================================
 
 const contextManager = require("./contextManager");
 const { resolvePronoun } = require("./pronounResolver");
+const { analyzeContext } = require("./contextAnalyzer");
 
 function buildContext({
   message,
@@ -12,6 +13,8 @@ function buildContext({
   conversationHistory = [],
   profile = [],
 }) {
+  const contextAnalysis = analyzeContext(message);
+
   const memorySection =
     memories.length > 0
       ? memories
@@ -91,6 +94,19 @@ CONVERSATION STATE
 
 Follow Up:
 ${contextMetadata.followUp ? "Ya" : "Tidak"}
+
+=========================
+
+CONTEXT ANALYSIS
+
+Question:
+${contextAnalysis.hasQuestion ? "Ya" : "Tidak"}
+
+Memory Reference:
+${contextAnalysis.hasMemoryReference ? "Ya" : "Tidak"}
+
+Intent:
+${contextAnalysis.intentType}
 
 =========================
 

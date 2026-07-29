@@ -92,18 +92,20 @@ exports.generate = async (prompt) => {
   }
 
   // ==========================
-  // Follow Up Hobby
+  // Preference Memory
   // ==========================
 
   if (
     questionText.includes("apa yang saya suka") ||
     questionText.includes("yang saya suka")
   ) {
-    const match = history.match(/saya suka (.+)/i);
+    const memoryMatch = prompt.match(/Content:\s*Saya suka (.+)/i);
 
-    if (match) {
-      return `Kamu suka ${match[1].trim()}.`;
+    if (memoryMatch) {
+      return `Kamu suka ${memoryMatch[1].trim()}.`;
     }
+
+    return "Maaf, saya belum mengetahui apa yang kamu suka.";
   }
 
   // ==========================

@@ -5,7 +5,10 @@
 function extract(message, text) {
 
   if (
-    text.includes("saya suka")
+    text.includes("saya suka"),
+    text.includes("makanan favorit saya"),
+    text.includes("minuman favorit saya"),
+    text.includes("warna favorit saya")
   ) {
 
     return {

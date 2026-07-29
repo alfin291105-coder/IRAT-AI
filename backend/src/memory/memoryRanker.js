@@ -1,78 +1,70 @@
 // =========================================
-// Memory Ranker IRAT AI v0.3.0
-// Menghitung relevansi memory
+// Memory Ranker
+// IRAT AI v0.6.0
 // =========================================
 
-function normalize(text = "") {
-  return text
-    .toLowerCase()
-    .replace(/[^\p{L}\p{N}\s]/gu, " ")
-    .replace(/\s+/g, " ")
-    .trim();
+function normalize(value, max = 10) {
+    if (!value) return 0;
+
+    return Math.min(
+        Number(value),
+        max
+    );
 }
 
-function calculateScore(memory, message, detectedIntent) {
-  let score = 0;
 
-  const content = normalize(memory.content);
-  const messageText = normalize(message);
+function calculateMemoryScore(memory) {
 
-  // Intent / category cocok
-  if (detectedIntent && memory.category === detectedIntent) {
-    score += 100;
-  }
+    let score = 0;
 
-  // Keyword matching
-  const words = messageText.split(" ").filter((word) => word.length >= 3);
 
-  let keywordMatches = 0;
+    // Importance
+    score +=
+        normalize(memory.importance) * 10;
 
-  for (const word of words) {
-    if (content.includes(word)) {
-      keywordMatches++;
-      score += 10;
+
+    // Confidence memory
+    score +=
+        normalize(memory.confidence) * 5;
+
+
+    // Frequency penggunaan memory
+    score +=
+        normalize(memory.usageCount) * 2;
+
+
+    // Category priority
+    if (
+        memory.category === "identity" ||
+        memory.category === "preference"
+    ) {
+        score += 50;
     }
-  }
 
-  // Importance & Recency hanya jika memory memang relevan
-  if (keywordMatches > 0 || memory.category === detectedIntent) {
-    score += (memory.importance || 0) * 5;
-    score += calculateRecency(memory);
-  }
-  return score;
+
+    return score;
 }
 
-function calculateRecency(memory) {
-  const timestamp = memory.updatedAt || memory.createdAt;
 
-  if (!timestamp) {
-    return 0;
-  }
+function rankMemories(memories = []) {
 
-  const age = Date.now() - new Date(timestamp).getTime();
+    return memories
+        .map(memory => ({
+            ...memory,
 
-  const days = age / (1000 * 60 * 60 * 24);
-
-  if (days <= 7) {
-    return 20;
-  }
-
-  if (days <= 30) {
-    return 10;
-  }
-
-  return 0;
+            contextScore:
+                calculateMemoryScore(memory)
+        }))
+        .sort(
+            (a, b) =>
+                b.contextScore -
+                a.contextScore
+        );
 }
 
-function rankMemories(memories, message, detectedIntent) {
-  return memories
-    .map((memory) => ({
-      ...memory,
-      score: calculateScore(memory, message, detectedIntent),
-    }))
-    .sort((a, b) => b.score - a.score);
-}
 
 module.exports = {
-  rankMemories,
+    rankMemories,
+    calculateMemoryScore,
+    normalize
 };
